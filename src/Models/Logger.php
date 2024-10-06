@@ -1,6 +1,6 @@
 <?php
 
-namespace PrevailExcel\Nowpayments\Models;
+namespace Abaza\Nowpayments\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

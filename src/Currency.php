@@ -1,6 +1,6 @@
 <?php
 
-namespace PrevailExcel\Nowpayments;
+namespace Abaza\Nowpayments;
 
 /*
  * This file is part of the Laravel NOWPayments package.

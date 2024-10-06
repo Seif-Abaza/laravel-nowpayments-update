@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'PrevailExcel\\Nowpayments\\' => array($baseDir . '/src'),
+    'Abaza\\Nowpayments\\' => array($baseDir . '/src'),
 );

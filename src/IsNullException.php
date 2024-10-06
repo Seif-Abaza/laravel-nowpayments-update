@@ -1,6 +1,6 @@
 <?php
 
-namespace PrevailExcel\Nowpayments;
+namespace Abaza\Nowpayments;
 
 use Exception;
 

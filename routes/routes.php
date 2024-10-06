@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use PrevailExcel\Nowpayments\Http\Controllers\DashboardController;
-use PrevailExcel\Nowpayments\Http\Middleware\Authorize;
+use Abaza\Nowpayments\Http\Controllers\DashboardController;
+use Abaza\Nowpayments\Http\Middleware\Authorize;
 
 /*
  * This file is part of the Laravel NOWPayments package.
@@ -14,7 +14,7 @@ use PrevailExcel\Nowpayments\Http\Middleware\Authorize;
  */
 
 Route::group([
-	'prefix'  =>  config('nowpayments.path', 'laravel-nowpayments'),
+	'prefix'  =>  config('nowpayments.path', 'db-nowpayments'),
 	'middleware' => config('nowpayments.middleware', [Authorize::class]),
 ], function () {
 	Route::get('/', DashboardController::class)->name('nowpayments.dashboard');

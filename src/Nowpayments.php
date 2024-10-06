@@ -1,11 +1,11 @@
 <?php
 
-namespace PrevailExcel\Nowpayments;
+namespace Abaza\Nowpayments;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
-use PrevailExcel\Nowpayments\Models\Logger;
+use Abaza\Nowpayments\Models\Logger;
 
 /*
  * This file is part of the Laravel NOWPayments package.
@@ -546,5 +546,46 @@ class Nowpayments
         $jwt = $this->getJwt();
         $this->setRequestOptions($jwt);
         return $this->setHttpResponse('/subscriptions/' . $sub_id, 'DELETE', [])->getResponse();
+    }
+
+    public function validateAddress(array $data):  array|bool
+    {
+        /**
+         * address - the payout address;
+         * currency - the ticker of payout currency;
+         * (optional) extra_id - memo or destination tag, if applicable;
+         */
+        if($data != null){
+            $Req = $this->setHttpResponse('/payout/validate-address', 'POST', array_filter($data))->getResponse();
+            if($Req['statusCode'] == 400){
+                return $Req['message'];
+            }else{
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function createPayout(array $data = null): array
+    {
+        if ($data != null) {
+            if(!$Check = $this->validateAddress(['address' => request()->address, 'currency'=> request()->currency])){
+                return $Check;
+            }
+            $data = array_filter([
+                'address' => request()->address ?? null,
+                'currency' => request()->currency ?? Currency::USDTTRC20,
+                'amount' => request()->amount ?? 0,
+                'ipn_callback_url' => request()->ipn_callback_url ?? $this->callbackUrl,
+                "fiat_amount" => request()->fiat_amount ?? 0,
+                "fiat_currency" => request()->fiat_currency ?? null,
+                'payout_description' => request()->payout_description ?? null,
+                'unique_external_id' => request()->unique_external_id ?? null,
+            ]);
+            return $this->setHttpResponse('/payout', 'POST', array_filter($data))->getResponse();
+        }else{
+            return [];
+        }
+
     }
 }

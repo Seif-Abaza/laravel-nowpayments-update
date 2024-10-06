@@ -1,10 +1,10 @@
 <?php
 
-namespace PrevailExcel\Nowpayments\Http\Controllers;
+namespace Abaza\Nowpayments\Http\Controllers;
 
 use Illuminate\Http\Request;
-use PrevailExcel\Nowpayments\Facades\Nowpayments;
-use PrevailExcel\Nowpayments\Models\Logger;
+use Abaza\Nowpayments\Facades\Nowpayments;
+use Abaza\Nowpayments\Models\Logger;
 
 /*
  * This file is part of the Laravel NOWPayments package.

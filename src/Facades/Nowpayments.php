@@ -1,6 +1,6 @@
 <?php
 
-namespace PrevailExcel\Nowpayments\Facades;
+namespace Abaza\Nowpayments\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -24,6 +24,6 @@ class Nowpayments extends Facade
         return 'laravel-nowpayments';
     }
     
-    final public const VERSION = '1.0.1';
+    final public const VERSION = '1.0.2';
 
 }

@@ -15,7 +15,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laravel NOWPayment</title>
+    <title>NOWPayment</title>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
@@ -68,8 +68,8 @@
             <div class="navbar-header">
 
                 <a href="#" class="navbar-brand">
-                    <span class="visible-xs">Laravel NOWPayments</span>
-                    <span class="hidden-xs">Laravel NOWPayments</span>
+                    <span class="visible-xs">NOWPayments</span>
+                    <span class="hidden-xs">NOWPayments</span>
                 </a>
 
                 <p class="navbar-text">
@@ -160,18 +160,6 @@
                                         </li>
                                     @endforeach
                                 </ul>
-                            </div>
-
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    What's New in Laravel NOWPayments
-                                </div>
-                                <div class="panel-body">
-                                    Docs here on <a href="https://github.com/PrevailExcel/laravel-nowpayments"
-                                        target="_blank">Github</a><br>
-                                    Version: v{{ $version }} <br>
-                                    <a href="https://www.buymeacoffee.com/prevail" target="_blank">Buy Me A Coffee</a>
-                                </div>
                             </div>
                         </div>
                     </div>

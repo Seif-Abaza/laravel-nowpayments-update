@@ -1,7 +1,7 @@
 # laravel-nowpayments
 
-[![Latest Stable Version](https://poser.pugx.org/prevailexcel/laravel-nowpayments/v/stable.svg)](https://packagist.org/packages/prevailexcel/laravel-nowpayments)
-[![License](https://poser.pugx.org/prevailexcel/laravel-nowpayments/license.svg)](LICENSE.md)
+[![Latest Stable Version](https://github.com/Seif-Abaza/laravel-nowpayments-update.git/v/stable.svg)](https://github.com/Seif-Abaza/laravel-nowpayments-update.git)
+[![License](hhttps://github.com/Seif-Abaza/laravel-nowpayments-update.git/license.svg)](LICENSE.md)
 
 > A Laravel Package for working with NOWPayments seamlessly 
 ##
@@ -13,13 +13,13 @@
 To get the latest version of Laravel NOWPayments, simply require it
 
 ```bash
-composer require prevailexcel/laravel-nowpayments
+composer require abaza/laravel-nowpayments
 ```
 
 Or add the following line to the require block of your `composer.json` file.
 
 ```
-"prevailexcel/laravel-nowpayments": "1.0.*"
+"abaza/laravel-nowpayments": "1.0.*"
 ```
 
 You'll then need to run `composer install` or `composer update` to download it and have the autoloader updated.
@@ -31,21 +31,21 @@ Once Laravel NOWPayments is installed, you need to register the service provider
 ```php
 'providers' => [
     ...
-    PrevailExcel\Nowpayments\NowpaymentsServiceProvider::class,
+    Abaza\Nowpayments\NowpaymentsServiceProvider::class,
     ...
 ]
 ```
 
-> If you use **Laravel >= 5.5** you can skip this step and go to [**`configuration`**](https://github.com/PrevailExcel/laravel-nowpayments#configuration)
+> If you use **Laravel >= 5.5** you can skip this step and go to [**`configuration`**](https://github.com/Abaza/laravel-nowpayments#configuration)
 
-* `PrevailExcel\Nowpayments\NowpaymentsServiceProvider::class`
+* `Abaza\Nowpayments\NowpaymentsServiceProvider::class`
 
 Also, register the Facade like so:
 
 ```php
 'aliases' => [
     ...
-    'Nowpayments' => PrevailExcel\Nowpayments\Facades\Nowpayments::class,
+    'Nowpayments' => Abaza\Nowpayments\Facades\Nowpayments::class,
     ...
 ]
 ```
@@ -55,7 +55,7 @@ Also, register the Facade like so:
 You can publish the configuration file using this command:
 
 ```bash
-php artisan vendor:publish --provider="PrevailExcel\Nowpayments\NowpaymentsServiceProvider"
+php artisan vendor:publish --provider="Abaza\Nowpayments\NowpaymentsServiceProvider"
 ```
 
 A configuration-file named `nowpayments.php` with some sensible defaults will be placed in your `config` directory:
@@ -213,7 +213,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use PrevailExcel\Nowpayments\Facades\Nowpayments;
+use Abaza\Nowpayments\Facades\Nowpayments;
 
 class PaymentController extends Controller
 {
