@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Abaza\Nowpayments\Models\Logger;
+use Exception;
 
 /*
  * This file is part of the Laravel NOWPayments package.
@@ -56,7 +57,7 @@ class Nowpayments
      */
     protected $callbackUrl;
 
-    final public const VERSION = '1.0.1';
+    final public const VERSION = '1.0.2';
 
     public function __construct()
     {
@@ -136,7 +137,7 @@ class Nowpayments
 
         $this->response = $this->client->{strtolower($method)}(
             $this->baseUrl . $relativeUrl,
-            ["body" => json_encode($body)]
+            ["body" => json_encode(value: $body)]
         );
         if (strlen(stristr($relativeUrl, "?", true)) > 1)
             $relativeUrl = stristr($relativeUrl, "?", true);
@@ -189,7 +190,7 @@ class Nowpayments
     {
         if ($data == null) {
             $data =
-                "amount=" . 100 . "&" .
+                "amount=" . 1 . "&" .
                 "currency_from=" . "usd" . "&" .
                 "currency_to=" . "usdt";
         }
@@ -327,10 +328,10 @@ class Nowpayments
     {
         if ($data == null) {
             $data = array_filter([
-                'price_amount' => request()->price_amount ?? 100,
+                'price_amount' => request()->price_amount ?? 0,
                 'price_currency' => request()->price_currency ?? 'usd',
                 'pay_amount' => request()->pay_amount ?? null,
-                'pay_currency' => request()->pay_currency ?? Currency::BTC,
+                'pay_currency' => request()->pay_currency ?? Currency::USDTTRC20,
                 'ipn_callback_url' => request()->ipn_callback_url ?? $this->callbackUrl,
                 "success_url" => request()->success_url ?? $this->callbackUrl,
                 "cancel_url" => request()->cancel_url ?? $this->callbackUrl,
@@ -407,7 +408,7 @@ class Nowpayments
             $data = array_filter([
                 "title" => request()->title ?? "Plan Title",
                 "interval_day" => request()->interval ?? 1,
-                "amount" => request()->amount ?? 0.5,
+                "amount" => request()->amount ?? 0,
                 "currency" => request()->currency ?? "usd"
             ]);
         }
@@ -436,7 +437,7 @@ class Nowpayments
             $data = array_filter([
                 "title" => request()->title ?? "Plan Title",
                 "interval_day" => request()->interval ?? 1,
-                "amount" => request()->amount ?? 0.5,
+                "amount" => request()->amount ?? 0,
                 "currency" => request()->currency ?? "usd"
             ]);
 
@@ -548,44 +549,90 @@ class Nowpayments
         return $this->setHttpResponse('/subscriptions/' . $sub_id, 'DELETE', [])->getResponse();
     }
 
-    public function validateAddress(array $data):  array|bool
+    public function validateAddress(array $data): array|bool
     {
+        $Req = [];
         /**
          * address - the payout address;
          * currency - the ticker of payout currency;
          * (optional) extra_id - memo or destination tag, if applicable;
          */
-        if($data != null){
+        if ($data != null) {
             $Req = $this->setHttpResponse('/payout/validate-address', 'POST', array_filter($data))->getResponse();
-            if($Req['statusCode'] == 400){
-                return $Req['message'];
-            }else{
+            if (is_null($Req)) {
                 return true;
+            } else {
+                return $Req;
             }
         }
         return false;
     }
 
-    public function createPayout(array $data = null): array
+    public function createPayout(array $data = null): array|string
     {
-        if ($data != null) {
-            if(!$Check = $this->validateAddress(['address' => request()->address, 'currency'=> request()->currency])){
-                return $Check;
+        try {
+            if ($data != null) {
+                $this->validateAddress(['address' => $data['address'], 'currency' => $data['currency'], 'extra_id' => null]);
+                $ldata = [
+                    'ipn_callback_url' => 'https://nowpayments.io',
+                    'withdrawals' => [
+                        [
+                            'address' => $data['address'] ?? null,
+                            'currency' => $data['currency'] ?? Currency::USDTTRC20,
+                            'amount' => $data['amount'] ?? 0,
+                            'ipn_callback_url' => $data['ipn_callback_url'] ?? $this->callbackUrl,
+                            'payout_description' => $data['payout_description'] ?? null,
+                            'unique_external_id' => $data['unique_external_id'] ?? null,
+                        ]
+                    ]
+                ];
+                $jwt = $this->getJwt();
+                $this->setRequestOptions($jwt);
+                return $this->setHttpResponse('/payout', 'POST', array_filter($ldata))->getResponse();
+            } else {
+                return [];
             }
-            $data = array_filter([
-                'address' => request()->address ?? null,
-                'currency' => request()->currency ?? Currency::USDTTRC20,
-                'amount' => request()->amount ?? 0,
-                'ipn_callback_url' => request()->ipn_callback_url ?? $this->callbackUrl,
-                "fiat_amount" => request()->fiat_amount ?? 0,
-                "fiat_currency" => request()->fiat_currency ?? null,
-                'payout_description' => request()->payout_description ?? null,
-                'unique_external_id' => request()->unique_external_id ?? null,
-            ]);
-            return $this->setHttpResponse('/payout', 'POST', array_filter($data))->getResponse();
-        }else{
-            return [];
+        } catch (Exception $e) {
+            return $e->getMessage();
         }
+    }
+    //Not Tested
+    public function verificationPayout(string $batch, string $code): bool
+    {
+        $Data = [
+            'verification_code' => $code
+        ];
+        $jwt = $this->getJwt();
+        $this->setRequestOptions($jwt);
+        $Result = $this->setHttpResponse('/payout/' . $batch . '/verify', 'POST', array_filter($Data))->getResponse();
+        if (is_null($Result)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    public function checkPayoutStatus(string $batchID): array
+    {
+        $UrlParameter = '/payout?batch_id=' . $batchID . '&limit=1';
+        $jwt = $this->getJwt();
+        $this->setRequestOptions($jwt);
+        return $this->setHttpResponse($UrlParameter, 'GET', [])->getResponse();
+    }
+
+    public function getFee(string $amount, string $currency): array
+    {
+        $UrlParameter = '/payout/fee?currency=' . $currency . '&amount=' . $amount;
+        $jwt = $this->getJwt();
+        $this->setRequestOptions($jwt);
+        return $this->setHttpResponse($UrlParameter, 'GET', [])->getResponse();
+    }
+
+    public function getMinimalAmount(string $currency): array
+    {
+        $UrlParameter = '/payout-withdrawal/min-amount/' . $currency;
+        $jwt = $this->getJwt();
+        $this->setRequestOptions($jwt);
+        return $this->setHttpResponse($UrlParameter, 'GET', [])->getResponse();
     }
 }

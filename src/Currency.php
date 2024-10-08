@@ -70,4 +70,5 @@ class Currency
     public const UNI = "uni";
     public const OKB = "okb";
     public const BTC = "btc";
+    public const USDTBSC = 'usdtbsc';
 }

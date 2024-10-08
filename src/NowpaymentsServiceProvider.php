@@ -1,6 +1,6 @@
 <?php
 
-namespace PrevailExcel\Nowpayments;
+namespace Abaza\Nowpayments;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
@@ -9,7 +9,7 @@ use Illuminate\Support\ServiceProvider;
 /*
  * This file is part of the Laravel NOWPayments package.
  *
- * (c) Prevail Ejimadu <prevailexcellent@gmail.com>
+ * (c) Seif Abaza <seif.abaza@yandex.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
